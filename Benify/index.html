@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benify — Программа лояльности для ресторанов и кофеен</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Шапка с кнопками входа/регистрации -->
+    <header class="header">
+        <div class="container">
+            <div class="header-inner">
+                <div class="logo">
+                    <span class="logo-text">Benify</span>
+                </div>
+                <nav class="nav">
+                    <a href="#effect" class="nav-link">Эффект</a>
+                    <a href="#speed" class="nav-link">Скорость</a>
+                    <a href="#card" class="nav-link">Карта</a>
+                    <a href="#ranks" class="nav-link">Ранги</a>
+                    <a href="#marketing" class="nav-link">Акции</a>
+                    <a href="#faq" class="nav-link">FAQ</a>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn-outline" onclick="openModal('login')">Вход</button>
+                    <button class="btn-solid" onclick="openModal('register')">Регистрация</button>
+                    <button class="btn-demo" onclick="document.querySelector('#cta').scrollIntoView({behavior: 'smooth'})">
+                        Получить демо
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Модальное окно входа -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('login')">&times;</span>
+            <div class="modal-title">Вход в Benify</div>
+            
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="loginEmail" placeholder="example@mail.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="********">
+            </div>
+            <div class="error-message" id="loginError"></div>
+            
+            <button class="modal-btn" onclick="handleLogin()">Войти</button>
+            
+            <div class="modal-link">
+                Нет аккаунта? <span onclick="switchToRegister()">Зарегистрироваться</span>
+            </div>
+            
+            <div class="modal-separator">или</div>
+            
+            <button class="telegram-login" onclick="handleTelegramLogin()">
+                <span>📱</span> Войти через Telegram
+            </button>
+            
+            <div class="business-link">
+                <a href="crm.html">🔧 Вход для бизнеса (CRM)</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('register')">&times;</span>
+            <div class="modal-title">Регистрация</div>
+            
+            <div class="form-group">
+                <label class="form-label">Имя</label>
+                <input type="text" class="form-input" id="registerName" placeholder="Иван Петров">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="registerEmail" placeholder="example@mail.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Телефон</label>
+                <input type="tel" class="form-input" id="registerPhone" placeholder="+7 (999) 123-45-67">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <input type="password" class="form-input" id="registerPassword" placeholder="********">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Подтвердите пароль</label>
+                <input type="password" class="form-input" id="registerConfirm" placeholder="********">
+            </div>
+            <div class="error-message" id="registerError"></div>
+            <div class="success-message" id="registerSuccess"></div>
+            
+            <button class="modal-btn" onclick="handleRegister()">Зарегистрироваться</button>
+            
+            <div class="modal-link">
+                Уже есть аккаунт? <span onclick="switchToLogin()">Войти</span>
+            </div>
+            
+            <div class="modal-separator">или</div>
+            
+            <button class="telegram-login" onclick="handleTelegramLogin()">
+                <span>📱</span> Зарегистрироваться через Telegram
+            </button>
+        </div>
+    </div>
+
+    <!-- Главный экран -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge">🚀 Запуск за 7 дней</div>
+                    <h1 class="hero-title">
+                        Программа лояльности
+                        <span>для ресторанов и кофеен</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Под ваш бренд. Без лишних действий для гостей. 
+                        Telegram Mini App + Apple/Google Wallet.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn-primary" onclick="openModal('register')">
+                            Попробовать бесплатно
+                        </button>
+                        <button class="btn-secondary" onclick="alert('Демо-версия: здесь будет видео')">
+                            Смотреть демо
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">+10-25%</span>
+                            <span class="stat-label">рост повторных визитов</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">+5-15%</span>
+                            <span class="stat-label">рост среднего чека</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">30-60%</span>
+                            <span class="stat-label">доля выручки от лояльных</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="card-preview">
+                        <div class="card-header">
+                            <span class="card-logo">benify</span>
+                            <span class="card-balance">1 250 баллов</span>
+                        </div>
+                        <div class="card-number">
+                            5375 2012 3456 7890
+                        </div>
+                        <div class="card-details">
+                            <div class="card-detail">
+                                <small>Имя владельца</small>
+                                <strong>Иван Петров</strong>
+                            </div>
+                            <div class="card-detail">
+                                <small>Действует до</small>
+                                <strong>12/26</strong>
+                            </div>
+                        </div>
+                        <div class="card-level">
+                            🥉 Серебряный уровень · Кешбэк 3%
+                        </div>
+                        <div class="telegram-badge">
+                            📱 Telegram Mini App
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 30px; justify-content: center;">
+                        <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">Apple Pay</span>
+                        <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">Google Pay</span>
+                        <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">iiko</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "Эффект" -->
+    <section id="effect" class="effect">
+        <div class="container">
+            <div class="section-header">
+                <h2>Эффект от внедрения программы лояльности</h2>
+                <p>(по рынку)</p>
+            </div>
+            <div class="effect-grid">
+                <div class="effect-card">
+                    <div class="effect-number">+10-25%</div>
+                    <div class="effect-desc">рост повторных визитов</div>
+                </div>
+                <div class="effect-card">
+                    <div class="effect-number">+5-15%</div>
+                    <div class="effect-desc">рост среднего чека у участников</div>
+                </div>
+                <div class="effect-card">
+                    <div class="effect-number">30-60%</div>
+                    <div class="effect-desc">доля выручки от лояльных гостей</div>
+                </div>
+            </div>
+            <p style="text-align: center; color: #718096; margin-top: 40px; font-size: 14px;">
+                Диапазоны — ориентиры по рынку. Фактический эффект зависит от трафика, цен, сезонности и качества внедрения.
+            </p>
+        </div>
+    </section>
+
+    <!-- Секция "Скорость" -->
+    <section id="speed" class="speed">
+        <div class="container">
+            <div class="section-header">
+                <h2>Запуск за 7 дней</h2>
+                <p>Берём внедрение бонусной программы под ключ: от брендирования до обучения команды</p>
+            </div>
+            <div class="speed-grid">
+                <div class="speed-card">
+                    <div class="speed-icon">🎨</div>
+                    <h3>Дизайн под бренд</h3>
+                    <p>Адаптируем карту и интерфейс под ваш фирменный стиль. Гость видит ваш бренд, а не логотип агрегатора.</p>
+                </div>
+                <div class="speed-card">
+                    <div class="speed-icon">🔌</div>
+                    <h3>Подключение к кассе</h3>
+                    <p>Интеграция с iiko: подключаем кассу и настраиваем автоматическую работу программы лояльности.</p>
+                </div>
+                <div class="speed-card">
+                    <div class="speed-icon">📚</div>
+                    <h3>Запуск и обучение</h3>
+                    <p>Передаём готовую систему и обучаем персонал. Первые результаты — сразу.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "Цифровая карта" -->
+    <section id="card" class="card-features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Цифровая карта лояльности — без лишних действий</h2>
+            </div>
+            <div class="card-grid">
+                <div class="card-feature-item">
+                    <h3>📱 Telegram Mini App</h3>
+                    <p>Полноценный личный кабинет прямо в мессенджере. Не нужно скачивать приложение.</p>
+                    <ul class="card-feature-list">
+                        <li>Регистрация в 2 клика</li>
+                        <li>Просмотр доступных акций</li>
+                    </ul>
+                </div>
+                <div class="card-feature-item">
+                    <h3>💳 Apple / Google Wallet</h3>
+                    <p>Карта лояльности всегда под рукой. Обновление баланса в реальном времени.</p>
+                    <ul class="card-feature-list">
+                        <li>Быстрый доступ к QR-коду</li>
+                        <li>Визуализация статуса гостя</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "Ранговая система" -->
+    <section id="ranks" class="ranks">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ваша база гостей — главный актив</h2>
+                <p>Мы помогаем собрать базу гостей, с которой дальше можно работать</p>
+            </div>
+            <h3 style="text-align: center; margin: 40px 0 20px;">Ранговая бонусная система</h3>
+            <div class="ranks-grid">
+                <div class="rank-card">
+                    <div class="rank-name bronze">Bronze</div>
+                    <div class="rank-cashback">3%</div>
+                    <p>кешбэк</p>
+                </div>
+                <div class="rank-card">
+                    <div class="rank-name silver">Silver</div>
+                    <div class="rank-cashback">5%</div>
+                    <p>кешбэк</p>
+                </div>
+                <div class="rank-card">
+                    <div class="rank-name gold">Gold</div>
+                    <div class="rank-cashback">10%</div>
+                    <p>кешбэк</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "Конструктор акций" -->
+    <section id="marketing" class="marketing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Конструктор акций и рассылок, которые приносят выручку</h2>
+                <p>Собирайте маркетинговые сценарии любой сложности</p>
+            </div>
+            <div class="marketing-grid">
+                <div class="card-feature-item">
+                    <h3>📊 Сегментируйте гостей</h3>
+                    <p>по десяткам параметров</p>
+                </div>
+                <div class="card-feature-item">
+                    <h3>🎯 Собирайте сценарии</h3>
+                    <p>под любые задачи бизнеса</p>
+                </div>
+            </div>
+            <h3 style="text-align: center; margin: 60px 0 30px;">Примеры сценариев</h3>
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <h4>Возврат потерянных клиентов</h4>
+                    <p>Отправляйте персональное предложение гостям, которые давно не были</p>
+                </div>
+                <div class="scenario-card">
+                    <h4>Праздники и дни рождения</h4>
+                    <p>Напоминайте о поводе прийти и дарите бонус</p>
+                </div>
+                <div class="scenario-card">
+                    <h4>Тихие часы</h4>
+                    <p>Поддерживайте продажи в часы, когда спрос проседает</p>
+                </div>
+                <div class="scenario-card">
+                    <h4>Реферальная программа</h4>
+                    <p>Гости приводят друзей и получают бонусы</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "Аналитика" -->
+    <section class="analytics">
+        <div class="container">
+            <div class="section-header">
+                <h2>Прозрачные цифры вашего роста</h2>
+                <p>Аналитика программы лояльности в реальном времени</p>
+            </div>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                    <h3>Показатели</h3>
+                    <p>Ключевые метрики бизнеса и эффективность программы</p>
+                </div>
+                <div class="analytics-card">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📈</div>
+                    <h3>Динамика</h3>
+                    <p>Частота возвратов и влияние на визиты</p>
+                </div>
+                <div class="analytics-card">
+                    <div style="font-size: 48px; margin-bottom: 20px;">💰</div>
+                    <h3>Эффект</h3>
+                    <p>ROI каждой запущенной рассылки или акции</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция FAQ -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Частые вопросы</h2>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Сколько стоит программа лояльности Benify?
+                        <span style="font-size: 24px;">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Стоимость — от 6 000 ₽ в месяц за одну точку. Первый месяц — бесплатный пилот, чтобы вы могли оценить результат до оплаты.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Как быстро можно запустить систему лояльности?
+                        <span style="font-size: 24px;">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Полный запуск занимает 7 дней: от брендирования интерфейса до обучения персонала и подключения к кассе.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Нужно ли гостям скачивать приложение?
+                        <span style="font-size: 24px;">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Нет. Карта лояльности работает через Telegram Mini App и добавляется в Apple Wallet или Google Wallet. Ничего скачивать не нужно.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        С какими кассовыми системами работает Benify?
+                        <span style="font-size: 24px;">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Поддерживаем интеграцию с iiko. Подключение входит в стоимость запуска.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Какие акции и сценарии можно настроить?
+                        <span style="font-size: 24px;">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Конструктор позволяет собирать сценарии любой сложности: возврат потерянных гостей, бонусы на день рождения, тихие часы, реферальную программу, скидки по сегментам и триггерные рассылки.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Как устроена поддержка?
+                        <span style="font-size: 24px;">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Мы на связи в Telegram и по электронной почте. Помогаем с настройкой, отвечаем на вопросы по работе системы.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция с формой заявки -->
+    <section id="cta" class="cta">
+        <div class="container">
+            <h2>Получите демо системы</h2>
+            <p style="font-size: 18px; opacity: 0.9;">Оставьте заявку, и мы покажем, как система будет работать именно для вашего бренда.</p>
+            <div class="cta-form">
+                <input type="email" class="cta-input" placeholder="Ваш email" id="demoEmail">
+                <button class="cta-button" onclick="submitDemo()">Отправить</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">🎯 Benify</div>
+                    <p style="color: #A0AEC0; margin-top: 20px;">Программа лояльности для ресторанов и кофеен</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Продукт</h4>
+                    <ul class="footer-links">
+                        <li><a href="#effect">Эффект</a></li>
+                        <li><a href="#speed">Скорость</a></li>
+                        <li><a href="#card">Карта</a></li>
+                        <li><a href="#ranks">Ранги</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Решения</h4>
+                    <ul class="footer-links">
+                        <li><a href="#marketing">Акции</a></li>
+                        <li><a href="#">Аналитика</a></li>
+                        <li><a href="#">Интеграции</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Контакты</h4>
+                    <ul class="footer-links">
+                        <li>Telegram: @benify</li>
+                        <li>Email: hello@benify.pro</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 60px; color: #4A5568;">
+                © 2026 Benify. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
