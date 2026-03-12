@@ -2,475 +2,570 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoyaltyPrime — Программа лояльности для малого и среднего бизнеса</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Benify — бонусы через Telegram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background: #f8f9ff;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        
+        /* Индикатор загрузки */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0ff;
+            border-top-color: #6b4eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Профиль */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6b4eff, #9b7bff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 26px;
+        }
+        
+        /* Карточка баланса */
+        .balance-card {
+            background: linear-gradient(145deg, #1e1e2f, #2a2a3c);
+            border-radius: 28px;
+            padding: 24px 20px;
+            color: white;
+            margin-bottom: 24px;
+        }
+        
+        .balance-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 16px 0;
+        }
+        
+        .balance-amount {
+            font-size: 42px;
+            font-weight: 700;
+        }
+        
+        .balance-amount small {
+            font-size: 18px;
+            opacity: 0.7;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd966, #ffb347);
+            border-radius: 20px;
+            transition: width 0.3s;
+        }
+        
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 6px;
+            border-radius: 40px;
+            margin-bottom: 24px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: #6b4eff;
+            color: white;
+        }
+        
+        /* Секции */
+        .section {
+            display: block;
+        }
+        
+        .section.hidden {
+            display: none;
+        }
+        
+        /* Карточки предложений */
+        .offer-card {
+            background: white;
+            border-radius: 22px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .offer-card:active {
+            transform: scale(0.98);
+        }
+        
+        .offer-icon {
+            width: 56px;
+            height: 56px;
+            background: #f0eeff;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .bonus-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        /* Кнопка отправки данных в бот */
+        .tg-send-btn {
+            background: #6b4eff;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <!-- Шапка с кнопками входа/регистрации -->
-    <header class="header">
-        <div class="container">
-            <div class="header-inner">
-                <div class="logo">
-                    <span class="logo-text">LoyaltyPrime</span>
-                </div>
-                <nav class="nav">
-                    <!-- a href="#effect" class="nav-link">Эффект</a> -->
-                    <!-- <a href="#speed" class="nav-link">Скорость</a> -->
-                    <a href="#card" class="nav-link">Карта</a>
-                    <a href="#ranks" class="nav-link">Ранги</a>
-                    <a href="#marketing" class="nav-link">Акции</a>
-                    <a href="#faq" class="nav-link">FAQ</a>
-                </nav>
-                <div class="auth-buttons">
-                    <button class="btn-outline" onclick="openModal('login')">Вход</button>
-                    <button class="btn-solid" onclick="openModal('register')">Регистрация</button>
-                    <button class="btn-demo" onclick="document.querySelector('#cta').scrollIntoView({behavior: 'smooth'})">
-                        Получить демо
-                    </button>
-                </div>
+    <div class="container">
+        <!-- Индикатор загрузки -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Загрузка данных из бота...</p>
+        </div>
+        
+        <!-- Шапка профиля -->
+        <div class="profile-header">
+            <div class="avatar" id="userAvatar">Б</div>
+            <div>
+                <h2 id="userName">Загрузка...</h2>
+                <p id="userRank">Ранг: Новичок</p>
             </div>
         </div>
-    </header>
-
-    <!-- Модальное окно входа -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('login')">&times;</span>
-            <div class="modal-title">Вход в LoyaltyPrime</div>
-            
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="loginEmail" placeholder="example@mail.com">
+        
+        <!-- Карточка баланса -->
+        <div class="balance-card">
+            <div>💰 Текущий баланс</div>
+            <div class="balance-main">
+                <span class="balance-amount" id="balance">0 <small>бон.</small></span>
+                <span id="userRankBadge">🏅 Новичок</span>
             </div>
-            <div class="form-group">
-                <label class="form-label">Пароль</label>
-                <input type="password" class="form-input" id="loginPassword" placeholder="********">
+            <div class="progress-bar">
+                <div class="progress-fill" id="rankProgress" style="width: 0%;"></div>
             </div>
-            <div class="error-message" id="loginError"></div>
-            
-            <button class="modal-btn" onclick="handleLogin()">Войти</button>
-            
-            <div class="modal-link">
-                Нет аккаунта? <span onclick="switchToRegister()">Зарегистрироваться</span>
+            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <span id="currentRank">Новичок</span>
+                <span id="nextRank">Серебро</span>
             </div>
-            
-            <!-- div class="modal-separator">или</div>
-            
-            <button class="telegram-login" onclick="handleTelegramLogin()">
-                <span>📱</span> Войти через Telegram
-            </button> 
-            
-             <div class="business-link">
-                <a href="crm.html">🔧 Вход для бизнеса (CRM)</a>
-            </div>  -->
         </div>
+        
+        <!-- Вкладки -->
+        <div class="tabs">
+            <div class="tab active" data-tab="bonus">🎁 Бонусы</div>
+            <div class="tab" data-tab="raffles">🎲 Розыгрыши</div>
+            <div class="tab" data-tab="profile">👤 Профиль</div>
+        </div>
+        
+        <!-- Секция Бонусы -->
+        <div id="bonusSection" class="section">
+            <h3>🔥 Персональные предложения</h3>
+            <div id="offersContainer"></div>
+        </div>
+        
+        <!-- Секция Розыгрыши -->
+        <div id="rafflesSection" class="section hidden">
+            <h3>🎰 Активные розыгрыши</h3>
+            <div id="rafflesContainer"></div>
+            
+            <!-- Реферальный блок -->
+            <div style="background: linear-gradient(135deg, #f5f0ff, white); border-radius: 24px; padding: 20px; margin-top: 24px; border: 1px dashed #6b4eff;">
+                <h4>👥 Пригласи друга</h4>
+                <p>Твой реферальный код: <strong id="referralCode">BENIFY-1234</strong></p>
+                <button id="copyReferralBtn" style="background: #6b4eff; color: white; border: none; border-radius: 40px; padding: 12px 24px; width: 100%;">Копировать код</button>
+            </div>
+        </div>
+        
+        <!-- Секция Профиль -->
+        <div id="profileSection" class="section hidden">
+            <h3>⭐ Мой профиль</h3>
+            <div style="background: white; border-radius: 24px; padding: 20px;">
+                <p><strong>📊 Статистика:</strong></p>
+                <p>• Покупок: <span id="statPurchases">0</span></p>
+                <p>• Потрачено: <span id="statSpent">0</span> ₽</p>
+                <p>• Рефералов: <span id="statReferrals">0</span></p>
+            </div>
+            
+            <h4 style="margin: 20px 0 10px;">📅 Мои абонементы</h4>
+            <div id="subscriptionsContainer"></div>
+        </div>
+        
+        <!-- Кнопка отправки данных в бот (невидимая, используется для теста) -->
+        <button id="testSendBtn" class="tg-send-btn" style="display: none;">Отправить тестовые данные</button>
     </div>
-
-    <!-- Модальное окно регистрации -->
-    <div class="modal" id="registerModal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('register')">&times;</span>
-            <div class="modal-title">Регистрация</div>
+    
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+            tg.setHeaderColor('#6b4eff');
+            tg.setBackgroundColor('#f8f9ff');
+        }
+        
+        // Получаем user_id из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
+        
+        // Состояние приложения
+        let appState = {
+            user: null,
+            offers: [],
+            raffles: [],
+            subscriptions: []
+        };
+        
+        // DOM элементы
+        const loadingEl = document.getElementById('loading');
+        const userNameEl = document.getElementById('userName');
+        const userRankEl = document.getElementById('userRank');
+        const balanceEl = document.getElementById('balance');
+        const rankProgressEl = document.getElementById('rankProgress');
+        const currentRankEl = document.getElementById('currentRank');
+        const nextRankEl = document.getElementById('nextRank');
+        const userRankBadge = document.getElementById('userRankBadge');
+        const offersContainer = document.getElementById('offersContainer');
+        const rafflesContainer = document.getElementById('rafflesContainer');
+        const subscriptionsContainer = document.getElementById('subscriptionsContainer');
+        const referralCodeEl = document.getElementById('referralCode');
+        const statPurchases = document.getElementById('statPurchases');
+        const statSpent = document.getElementById('statSpent');
+        const statReferrals = document.getElementById('statReferrals');
+        
+        // === ОСНОВНАЯ ФУНКЦИЯ: Отправка данных в Python бот ===
+        function sendToBot(action, data = {}) {
+            return new Promise((resolve, reject) => {
+                if (!tg) {
+                    console.log('Демо-режим:', { action, data });
+                    resolve({ status: 'demo' });
+                    return;
+                }
+                
+                // Формируем сообщение для бота
+                const message = JSON.stringify({
+                    action: action,
+                    ...data,
+                    timestamp: Date.now(),
+                    user_id: userId
+                });
+                
+                // Отправляем через Telegram
+                tg.sendData(message);
+                
+                // Показываем уведомление
+                tg.showAlert('📤 Данные отправлены в бот...');
+                
+                // Ждём ответа (бот ответит отдельным сообщением)
+                // В реальном проекте можно подписаться на события
+                resolve({ status: 'sent' });
+                
+                // Для теста можно имитировать ответ
+                setTimeout(() => {
+                    if (action === 'get_initial_data') {
+                        // Бот ответит сам, но для демо загружаем тестовые данные
+                        loadDemoData();
+                    }
+                }, 1000);
+            });
+        }
+        
+        // === ПОЛУЧЕНИЕ ДАННЫХ ИЗ БОТА ===
+        async function loadUserData() {
+            try {
+                // Запрашиваем данные у бота
+                await sendToBot('get_initial_data');
+                
+                // Бот ответит отдельным сообщением, которое мы перехватываем
+                // Для демо загружаем тестовые данные через 2 секунды
+                setTimeout(() => {
+                    loadDemoData();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                loadDemoData(); // Для теста загружаем демо-данные
+            }
+        }
+        
+        // === ДЕМО-ДАННЫЕ (для теста без бота) ===
+        function loadDemoData() {
+            appState = {
+                user: {
+                    first_name: 'Александр',
+                    balance: 1280,
+                    rank: 'Платина',
+                    purchases: 24,
+                    spent: 28940,
+                    referrals: 3,
+                    referral_code: 'BENIFY-ALEX23'
+                },
+                offers: [
+                    { icon: '☕', title: 'Кофе & Круассан', location: 'Кофейня', bonus: 150, price: 390 },
+                    { icon: '💇', title: 'Стрижка', location: 'Салон', bonus: 700, price: 1890 },
+                    { icon: '🍣', title: 'Сет Филадельфия', location: 'Суши', bonus: 200, price: 850 }
+                ],
+                raffles: [
+                    { id: 1, image: '✈️', title: 'Путешествие', sold: 42, total: 100, price: 200, end: '10.05' },
+                    { id: 2, image: '🎁', title: 'Ozon 5000', sold: 18, total: 50, price: 100, end: '15.05' }
+                ],
+                subscriptions: [
+                    { name: '🏋️ Фитнес', remaining: 8, total: 12, expiry: '30.06' },
+                    { name: '☕ Кофе', remaining: 3, total: 10, expiry: '31.05' }
+                ]
+            };
             
-            <div class="form-group">
-                <label class="form-label">Имя</label>
-                <input type="text" class="form-input" id="registerName" placeholder="Иван Петров">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="registerEmail" placeholder="example@mail.com">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Телефон</label>
-                <input type="tel" class="form-input" id="registerPhone" placeholder="+7 (999) 123-45-67">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Пароль</label>
-                <input type="password" class="form-input" id="registerPassword" placeholder="********">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Подтвердите пароль</label>
-                <input type="password" class="form-input" id="registerConfirm" placeholder="********">
-            </div>
-            <div class="error-message" id="registerError"></div>
-            <div class="success-message" id="registerSuccess"></div>
+            updateUI();
+            loadingEl.style.display = 'none';
+        }
+        
+        // === ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ===
+        function updateUI() {
+            if (!appState.user) return;
             
-            <button class="modal-btn" onclick="handleRegister()">Зарегистрироваться</button>
+            // Профиль
+            userNameEl.textContent = appState.user.first_name;
+            userRankEl.textContent = `Ранг: ${appState.user.rank}`;
+            balanceEl.innerHTML = `${appState.user.balance} <small>бон.</small>`;
+            userRankBadge.textContent = `🏅 ${appState.user.rank}`;
             
-            <div class="modal-link">
-                Уже есть аккаунт? <span onclick="switchToLogin()">Войти</span>
-            </div>
+            // Прогресс ранга (пример)
+            rankProgressEl.style.width = '72%';
+            currentRankEl.textContent = appState.user.rank;
+            nextRankEl.textContent = 'Бриллиант';
             
-            <!-- <div class="modal-separator">или</div>
+            // Реферальный код
+            if (referralCodeEl) {
+                referralCodeEl.textContent = appState.user.referral_code || 'BENIFY-1234';
+            }
             
-            <button class="telegram-login" onclick="handleTelegramLogin()">
-                <span>📱</span> Зарегистрироваться через Telegram
-            </button> -->
-        </div>
-    </div>
-
-    <!-- Главный экран -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        Программа лояльности
-                        <span>для малого и среднего бизнеса</span>
-                    </h1>
-                    <p class="hero-subtitle">
-                        Под ваш бренд. Без лишних действий для гостей. 
-                        Telegram Mini App 
-                    </p>
-                    <div class="hero-buttons">
-                        <button class="btn-primary" onclick="openModal('register')">
-                            Попробовать бесплатно
+            // Статистика
+            if (statPurchases) statPurchases.textContent = appState.user.purchases || 0;
+            if (statSpent) statSpent.textContent = appState.user.spent || 0;
+            if (statReferrals) statReferrals.textContent = appState.user.referrals || 0;
+            
+            // Предложения
+            if (offersContainer) {
+                offersContainer.innerHTML = appState.offers.map(offer => `
+                    <div class="offer-card" onclick="buyOffer(${offer.id || 1}, '${offer.title}')">
+                        <div class="offer-icon">${offer.icon}</div>
+                        <div>
+                            <h4>${offer.title}</h4>
+                            <p>${offer.location}</p>
+                            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                                <span class="bonus-badge">+${offer.bonus} бонусов</span>
+                                <span>${offer.price} ₽</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Розыгрыши
+            if (rafflesContainer) {
+                rafflesContainer.innerHTML = appState.raffles.map(raffle => `
+                    <div style="background: white; border-radius: 24px; padding: 20px; margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 24px;">${raffle.image}</span>
+                            <span>${raffle.sold}/${raffle.total}</span>
+                        </div>
+                        <h4>${raffle.title}</h4>
+                        <div style="background: #eee; height: 8px; border-radius: 20px; margin: 10px 0;">
+                            <div style="width: ${(raffle.sold/raffle.total)*100}%; background: #6b4eff; height: 8px; border-radius: 20px;"></div>
+                        </div>
+                        <p>Цена билета: ${raffle.price} бонусов</p>
+                        <button onclick="buyRaffleTicket(${raffle.id}, ${raffle.price})" style="background: #6b4eff; color: white; border: none; border-radius: 40px; padding: 12px; width: 100%; margin-top: 10px;">
+                            Купить билет
                         </button>
-                        <!-- <button class="btn-secondary" onclick="alert('Демо-версия: здесь будет видео')">
-                            Смотреть демо
-                        </button> -->
                     </div>
-                    <!-- <div class="hero-stats">
-                        <div class="stat-item">
-                            <span class="stat-value">+10-25%</span>
-                            <span class="stat-label">рост повторных визитов</span>
+                `).join('');
+            }
+            
+            // Абонементы
+            if (subscriptionsContainer) {
+                subscriptionsContainer.innerHTML = appState.subscriptions.map(sub => `
+                    <div style="background: #f8f8fc; border-radius: 20px; padding: 16px; margin-bottom: 12px;">
+                        <h5>${sub.name}</h5>
+                        <div style="background: #e0e0e0; height: 6px; border-radius: 20px;">
+                            <div style="width: ${(sub.remaining/sub.total)*100}%; background: #6b4eff; height: 6px; border-radius: 20px;"></div>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-value">+5-15%</span>
-                            <span class="stat-label">рост среднего чека</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">30-60%</span>
-                            <span class="stat-label">доля выручки от лояльных</span>
-                        </div>
-                    </div> -->
-                </div>
-                <div class="hero-visual">
-                    <div class="card-preview">
-                        <div class="card-header">
-                            <span class="card-logo">LoyaltyPrime</span>
-                            <span class="card-balance">1 250 баллов</span>
-                        </div>
-                        <div class="card-number">
-                            5375 2012 3456 7890
-                        </div>
-                        <div class="card-details">
-                            <div class="card-detail">
-                                <small>Имя владельца</small>
-                                <strong>Иван Петров</strong>
-                            </div>
-                            <div class="card-detail">
-                                <small>Действует до месяц/год</small>
-                                <strong>12/26</strong>
-                            </div>
-                        </div>
-                        <div class="card-level">
-                            🥉 Серебряный уровень · Кешбэк 3%
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span>Осталось ${sub.remaining}</span>
+                            <span>до ${sub.expiry}</span>
                         </div>
                     </div>
-                    <!-- <div style="display: flex; gap: 12px; margin-top: 30px; justify-content: center;">
-                        <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">Apple Pay</span>
-                        <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">Google Pay</span>
-                        <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">iiko</span>
-                    </div> -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Секция "Эффект" -->
-    <!-- <section id="effect" class="effect">
-        <div class="container">
-            <div class="section-header">
-                <h2>Эффект от внедрения программы лояльности</h2>
-                <p>(по рынку)</p>
-            </div>
-            <div class="effect-grid">
-                <div class="effect-card">
-                    <div class="effect-number">+10-25%</div>
-                    <div class="effect-desc">рост повторных визитов</div>
-                </div>
-                <div class="effect-card">
-                    <div class="effect-number">+5-15%</div>
-                    <div class="effect-desc">рост среднего чека у участников</div>
-                </div>
-                <div class="effect-card">
-                    <div class="effect-number">30-60%</div>
-                    <div class="effect-desc">доля выручки от лояльных гостей</div>
-                </div>
-            </div>
-            <p style="text-align: center; color: #718096; margin-top: 40px; font-size: 14px;">
-                Диапазоны — ориентиры по рынку. Фактический эффект зависит от трафика, цен, сезонности и качества внедрения.
-            </p>
-        </div>
-    </section> -->
-
-    <!-- Секция "Скорость" -->
-    <!-- <section id="speed" class="speed">
-        <div class="container">
-            <div class="section-header">
-                <h2>Запуск за 7 дней</h2>
-                <p>Берём внедрение бонусной программы под ключ: от брендирования до обучения команды</p>
-            </div>
-            <div class="speed-grid">
-                <div class="speed-card">
-                    <div class="speed-icon">🎨</div>
-                    <h3>Дизайн под бренд</h3>
-                    <p>Адаптируем карту и интерфейс под ваш фирменный стиль. Гость видит ваш бренд, а не логотип агрегатора.</p>
-                </div>
-                <div class="speed-card">
-                    <div class="speed-icon">🔌</div>
-                    <h3>Подключение к кассе</h3>
-                    <p>Интеграция с iiko: подключаем кассу и настраиваем автоматическую работу программы лояльности.</p>
-                </div>
-                <div class="speed-card">
-                    <div class="speed-icon">📚</div>
-                    <h3>Запуск и обучение</h3>
-                    <p>Передаём готовую систему и обучаем персонал. Первые результаты — сразу.</p>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-    <!-- Секция "Цифровая карта" -->
-    <section id="card" class="card-features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Цифровая карта лояльности — без лишних действий</h2>
-            </div>
-            <div class="card-grid">
-                <div class="card-feature-item">
-                    <h3>📱 Telegram Mini App</h3>
-                    <p>Полноценный личный кабинет прямо в мессенджере. Не нужно скачивать приложение.</p>
-                    <ul class="card-feature-list">
-                        <li>Регистрация в 2 клика</li>
-                        <li>Просмотр доступных акций</li>
-                    </ul>
-                </div>
-                <div class="card-feature-item">
-                    <h3>💳</h3>
-                    <p>Карта лояльности всегда под рукой. Обновление баланса в реальном времени.</p>
-                    <ul class="card-feature-list">
-                        <li>Быстрый доступ к QR-коду</li>
-                        <li>Визуализация статуса гостя</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Секция "Ранговая система" -->
-    <section id="ranks" class="ranks">
-        <div class="container">
-            <div class="section-header">
-                <h2>Ваша база гостей — главный актив</h2>
-                <p>Мы помогаем собрать базу гостей, с которой дальше можно работать</p>
-            </div>
-            <h3 style="text-align: center; margin: 40px 0 20px;">Ранговая бонусная система</h3>
-            <div class="ranks-grid">
-                <div class="rank-card">
-                    <div class="rank-name bronze">Bronze</div>
-                    <div class="rank-cashback">3%</div>
-                    <p>кешбэк</p>
-                </div>
-                <div class="rank-card">
-                    <div class="rank-name silver">Silver</div>
-                    <div class="rank-cashback">5%</div>
-                    <p>кешбэк</p>
-                </div>
-                <div class="rank-card">
-                    <div class="rank-name gold">Gold</div>
-                    <div class="rank-cashback">10%</div>
-                    <p>кешбэк</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Секция "Конструктор акций" -->
-    <section id="marketing" class="marketing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Конструктор акций и рассылок, которые приносят выручку</h2>
-                <p>Собирайте маркетинговые сценарии любой сложности</p>
-            </div>
-            <div class="marketing-grid">
-                <div class="card-feature-item">
-                    <h3>📊 Сегментируйте гостей</h3>
-                    <p>по десяткам параметров</p>
-                </div>
-                <div class="card-feature-item">
-                    <h3>🎯 Собирайте сценарии</h3>
-                    <p>под любые задачи бизнеса</p>
-                </div>
-            </div>
-            <h3 style="text-align: center; margin: 60px 0 30px;">Примеры сценариев</h3>
-            <div class="scenario-grid">
-                <div class="scenario-card">
-                    <h4>Возврат потерянных клиентов</h4>
-                    <p>Отправляйте персональное предложение гостям, которые давно не были</p>
-                </div>
-                <div class="scenario-card">
-                    <h4>Праздники и дни рождения</h4>
-                    <p>Напоминайте о поводе прийти и дарите бонус</p>
-                </div>
-                <div class="scenario-card">
-                    <h4>Тихие часы</h4>
-                    <p>Поддерживайте продажи в часы, когда спрос проседает</p>
-                </div>
-                <div class="scenario-card">
-                    <h4>Реферальная программа</h4>
-                    <p>Гости приводят друзей и получают бонусы</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Секция "Аналитика" -->
-    <!-- <section class="analytics">
-        <div class="container">
-            <div class="section-header">
-                <h2>Прозрачные цифры вашего роста</h2>
-                <p>Аналитика программы лояльности в реальном времени</p>
-            </div>
-            <div class="analytics-grid">
-                <div class="analytics-card">
-                    <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-                    <h3>Показатели</h3>
-                    <p>Ключевые метрики бизнеса и эффективность программы</p>
-                </div>
-                <div class="analytics-card">
-                    <div style="font-size: 48px; margin-bottom: 20px;">📈</div>
-                    <h3>Динамика</h3>
-                    <p>Частота возвратов и влияние на визиты</p>
-                </div>
-                <div class="analytics-card">
-                    <div style="font-size: 48px; margin-bottom: 20px;">💰</div>
-                    <h3>Эффект</h3>
-                    <p>ROI каждой запущенной рассылки или акции</p>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-    <!-- Секция FAQ -->
-    <section id="faq" class="faq">
-        <div class="container">
-            <div class="section-header">
-                <h2>Частые вопросы</h2>
-            </div>
-            <!-- <div class="faq-grid">
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        Сколько стоит программа лояльности LoyaltyPrime?
-                        <span style="font-size: 24px;">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Стоимость — от 6 000 ₽ в месяц за одну точку. Первый месяц — бесплатный пилот, чтобы вы могли оценить результат до оплаты.
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        Как быстро можно запустить систему лояльности?
-                        <span style="font-size: 24px;">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Полный запуск занимает 7 дней: от брендирования интерфейса до обучения персонала и подключения к кассе.
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        Нужно ли гостям скачивать приложение?
-                        <span style="font-size: 24px;">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Нет. Карта лояльности работает через Telegram Mini App и добавляется в Apple Wallet или Google Wallet. Ничего скачивать не нужно.
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        С какими кассовыми системами работает LoyaltyPrime?
-                        <span style="font-size: 24px;">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Поддерживаем интеграцию с iiko. Подключение входит в стоимость запуска.
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        Какие акции и сценарии можно настроить?
-                        <span style="font-size: 24px;">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Конструктор позволяет собирать сценарии любой сложности: возврат потерянных гостей, бонусы на день рождения, тихие часы, реферальную программу, скидки по сегментам и триггерные рассылки.
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        Как устроена поддержка?
-                        <span style="font-size: 24px;">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        Мы на связи в Telegram и по электронной почте. Помогаем с настройкой, отвечаем на вопросы по работе системы.
-                    </div>
-                </div> -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Секция с формой заявки -->
-    <section id="cta" class="cta">
-        <div class="container">
-            <h2>Получите демо системы</h2>
-            <p style="font-size: 18px; opacity: 0.9;">Оставьте заявку, и мы покажем, как система будет работать именно для вашего бренда.</p>
-            <div class="cta-form">
-                <input type="email" class="cta-input" placeholder="Ваш email" id="demoEmail">
-                <button class="cta-button" onclick="submitDemo()">Отправить</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Подвал -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <div class="footer-logo">LoyaltyPrime</div>
-                    <p style="color: #A0AEC0; margin-top: 20px;">Программа лояльности для малого и средего бизнеса</p>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 20px;">Продукт</h4>
-                    <ul class="footer-links">
-                        <!-- <li><a href="#effect">Эффект</a></li>
-                        <li><a href="#speed">Скорость</a></li> -->
-                        <li><a href="#card">Карта</a></li>
-                        <li><a href="#ranks">Ранги</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 20px;">Решения</h4>
-                    <ul class="footer-links">
-                        <li><a href="#marketing">Акции</a></li>
-                        <!-- <li><a href="#">Аналитика</a></li> -->
-                        <!-- <li><a href="#">Интеграции</a></li> -->
-                        <li><a href="#faq">FAQ</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 20px;">Контакты</h4>
-                    <ul class="footer-links">
-                        <li>Telegram: </li>
-                        <li>Email:</li>
-                    </ul>
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 60px; color: #4A5568;">
-                © 2026 LoyaltyPrime. Все права защищены.
-            </div>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+                `).join('');
+            }
+        }
+        
+        // === ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ ===
+        
+        // Покупка предложения
+        window.buyOffer = function(offerId, title) {
+            sendToBot('purchase', { offer_id: offerId, title: title });
+            
+            if (tg) {
+                tg.showAlert(`✅ Предложение "${title}" выбрано! Предъявите этот экран на кассе.`);
+            } else {
+                alert(`Покупка: ${title}`);
+            }
+        };
+        
+        // Покупка билета розыгрыша
+        window.buyRaffleTicket = function(raffleId, price) {
+            sendToBot('buy_raffle_ticket', { 
+                raffle_id: raffleId, 
+                tickets: 1 
+            });
+            
+            if (tg) {
+                tg.showAlert(`🎫 Билет куплен за ${price} бонусов!`);
+            } else {
+                alert(`Куплен билет за ${price} бонусов`);
+            }
+        };
+        
+        // Копирование реферального кода
+        document.getElementById('copyReferralBtn')?.addEventListener('click', () => {
+            const code = referralCodeEl?.textContent;
+            if (!code) return;
+            
+            navigator.clipboard?.writeText(code).then(() => {
+                sendToBot('referral_copied', { code: code });
+                
+                if (tg) {
+                    tg.showAlert('✅ Реферальный код скопирован!');
+                } else {
+                    alert('Код скопирован: ' + code);
+                }
+            });
+        });
+        
+        // Переключение вкладок
+        const tabs = document.querySelectorAll('.tab');
+        const sections = {
+            bonus: document.getElementById('bonusSection'),
+            raffles: document.getElementById('rafflesSection'),
+            profile: document.getElementById('profileSection')
+        };
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                Object.values(sections).forEach(s => s.classList.add('hidden'));
+                
+                const tabKey = tab.dataset.tab;
+                if (sections[tabKey]) {
+                    sections[tabKey].classList.remove('hidden');
+                    
+                    // Отправляем аналитику в бот
+                    sendToBot('tab_switch', { tab: tabKey });
+                }
+            });
+        });
+        
+        // Тестовая отправка
+        document.getElementById('testSendBtn')?.addEventListener('click', () => {
+            sendToBot('test', { message: 'Тестовое сообщение' });
+        });
+        
+        // Инициализация
+        if (tg) {
+            // Получаем данные пользователя из Telegram
+            const tgUser = tg.initDataUnsafe?.user;
+            if (tgUser) {
+                document.getElementById('userAvatar').textContent = tgUser.first_name[0];
+            }
+        }
+        
+        // Загружаем данные
+        loadUserData();
+    </script>
 </body>
 </html>
