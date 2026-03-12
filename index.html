@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benify — Программа лояльности для ресторанов и кофеен</title>
+    <title>LoyaltyPrime — Программа лояльности для малого и среднего бизнеса</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,11 +12,11 @@
         <div class="container">
             <div class="header-inner">
                 <div class="logo">
-                    <span class="logo-text">Benify</span>
+                    <span class="logo-text">LoyaltyPrime</span>
                 </div>
                 <nav class="nav">
-                    <a href="#effect" class="nav-link">Эффект</a>
-                    <a href="#speed" class="nav-link">Скорость</a>
+                    <!-- a href="#effect" class="nav-link">Эффект</a> -->
+                    <!-- <a href="#speed" class="nav-link">Скорость</a> -->
                     <a href="#card" class="nav-link">Карта</a>
                     <a href="#ranks" class="nav-link">Ранги</a>
                     <a href="#marketing" class="nav-link">Акции</a>
@@ -37,7 +37,7 @@
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('login')">&times;</span>
-            <div class="modal-title">Вход в Benify</div>
+            <div class="modal-title">Вход в LoyaltyPrime</div>
             
             <div class="form-group">
                 <label class="form-label">Email</label>
@@ -55,15 +55,15 @@
                 Нет аккаунта? <span onclick="switchToRegister()">Зарегистрироваться</span>
             </div>
             
-            <div class="modal-separator">или</div>
+            <!-- div class="modal-separator">или</div>
             
             <button class="telegram-login" onclick="handleTelegramLogin()">
                 <span>📱</span> Войти через Telegram
-            </button>
+            </button> 
             
-            <div class="business-link">
+             <div class="business-link">
                 <a href="crm.html">🔧 Вход для бизнеса (CRM)</a>
-            </div>
+            </div>  -->
         </div>
     </div>
 
@@ -102,11 +102,11 @@
                 Уже есть аккаунт? <span onclick="switchToLogin()">Войти</span>
             </div>
             
-            <div class="modal-separator">или</div>
+            <!-- <div class="modal-separator">или</div>
             
             <button class="telegram-login" onclick="handleTelegramLogin()">
                 <span>📱</span> Зарегистрироваться через Telegram
-            </button>
+            </button> -->
         </div>
     </div>
 
@@ -115,24 +115,23 @@
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-content">
-                    <div class="hero-badge">🚀 Запуск за 7 дней</div>
                     <h1 class="hero-title">
                         Программа лояльности
-                        <span>для ресторанов и кофеен</span>
+                        <span>для малого и среднего бизнеса</span>
                     </h1>
                     <p class="hero-subtitle">
                         Под ваш бренд. Без лишних действий для гостей. 
-                        Telegram Mini App + Apple/Google Wallet.
+                        Telegram Mini App 
                     </p>
                     <div class="hero-buttons">
                         <button class="btn-primary" onclick="openModal('register')">
                             Попробовать бесплатно
                         </button>
-                        <button class="btn-secondary" onclick="alert('Демо-версия: здесь будет видео')">
+                        <!-- <button class="btn-secondary" onclick="alert('Демо-версия: здесь будет видео')">
                             Смотреть демо
-                        </button>
+                        </button> -->
                     </div>
-                    <div class="hero-stats">
+                    <!-- <div class="hero-stats">
                         <div class="stat-item">
                             <span class="stat-value">+10-25%</span>
                             <span class="stat-label">рост повторных визитов</span>
@@ -145,12 +144,12 @@
                             <span class="stat-value">30-60%</span>
                             <span class="stat-label">доля выручки от лояльных</span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="hero-visual">
                     <div class="card-preview">
                         <div class="card-header">
-                            <span class="card-logo">benify</span>
+                            <span class="card-logo">LoyaltyPrime</span>
                             <span class="card-balance">1 250 баллов</span>
                         </div>
                         <div class="card-number">
@@ -162,29 +161,26 @@
                                 <strong>Иван Петров</strong>
                             </div>
                             <div class="card-detail">
-                                <small>Действует до</small>
+                                <small>Действует до месяц/год</small>
                                 <strong>12/26</strong>
                             </div>
                         </div>
                         <div class="card-level">
                             🥉 Серебряный уровень · Кешбэк 3%
                         </div>
-                        <div class="telegram-badge">
-                            📱 Telegram Mini App
-                        </div>
                     </div>
-                    <div style="display: flex; gap: 12px; margin-top: 30px; justify-content: center;">
+                    <!-- <div style="display: flex; gap: 12px; margin-top: 30px; justify-content: center;">
                         <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">Apple Pay</span>
                         <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">Google Pay</span>
                         <span style="background: #F0F5FF; padding: 8px 16px; border-radius: 30px; font-size: 14px;">iiko</span>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Секция "Эффект" -->
-    <section id="effect" class="effect">
+    <!-- <section id="effect" class="effect">
         <div class="container">
             <div class="section-header">
                 <h2>Эффект от внедрения программы лояльности</h2>
@@ -208,10 +204,10 @@
                 Диапазоны — ориентиры по рынку. Фактический эффект зависит от трафика, цен, сезонности и качества внедрения.
             </p>
         </div>
-    </section>
+    </section> -->
 
     <!-- Секция "Скорость" -->
-    <section id="speed" class="speed">
+    <!-- <section id="speed" class="speed">
         <div class="container">
             <div class="section-header">
                 <h2>Запуск за 7 дней</h2>
@@ -235,7 +231,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Секция "Цифровая карта" -->
     <section id="card" class="card-features">
@@ -253,7 +249,7 @@
                     </ul>
                 </div>
                 <div class="card-feature-item">
-                    <h3>💳 Apple / Google Wallet</h3>
+                    <h3>💳</h3>
                     <p>Карта лояльности всегда под рукой. Обновление баланса в реальном времени.</p>
                     <ul class="card-feature-list">
                         <li>Быстрый доступ к QR-коду</li>
@@ -332,7 +328,7 @@
     </section>
 
     <!-- Секция "Аналитика" -->
-    <section class="analytics">
+    <!-- <section class="analytics">
         <div class="container">
             <div class="section-header">
                 <h2>Прозрачные цифры вашего роста</h2>
@@ -356,7 +352,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Секция FAQ -->
     <section id="faq" class="faq">
@@ -364,10 +360,10 @@
             <div class="section-header">
                 <h2>Частые вопросы</h2>
             </div>
-            <div class="faq-grid">
+            <!-- <div class="faq-grid">
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        Сколько стоит программа лояльности Benify?
+                        Сколько стоит программа лояльности LoyaltyPrime?
                         <span style="font-size: 24px;">+</span>
                     </div>
                     <div class="faq-answer">
@@ -394,7 +390,7 @@
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        С какими кассовыми системами работает Benify?
+                        С какими кассовыми системами работает LoyaltyPrime?
                         <span style="font-size: 24px;">+</span>
                     </div>
                     <div class="faq-answer">
@@ -418,7 +414,7 @@
                     <div class="faq-answer">
                         Мы на связи в Telegram и по электронной почте. Помогаем с настройкой, отвечаем на вопросы по работе системы.
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
@@ -440,14 +436,14 @@
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <div class="footer-logo">🎯 Benify</div>
-                    <p style="color: #A0AEC0; margin-top: 20px;">Программа лояльности для ресторанов и кофеен</p>
+                    <div class="footer-logo">LoyaltyPrime</div>
+                    <p style="color: #A0AEC0; margin-top: 20px;">Программа лояльности для малого и средего бизнеса</p>
                 </div>
                 <div>
                     <h4 style="margin-bottom: 20px;">Продукт</h4>
                     <ul class="footer-links">
-                        <li><a href="#effect">Эффект</a></li>
-                        <li><a href="#speed">Скорость</a></li>
+                        <!-- <li><a href="#effect">Эффект</a></li>
+                        <li><a href="#speed">Скорость</a></li> -->
                         <li><a href="#card">Карта</a></li>
                         <li><a href="#ranks">Ранги</a></li>
                     </ul>
@@ -456,21 +452,21 @@
                     <h4 style="margin-bottom: 20px;">Решения</h4>
                     <ul class="footer-links">
                         <li><a href="#marketing">Акции</a></li>
-                        <li><a href="#">Аналитика</a></li>
-                        <li><a href="#">Интеграции</a></li>
+                        <!-- <li><a href="#">Аналитика</a></li> -->
+                        <!-- <li><a href="#">Интеграции</a></li> -->
                         <li><a href="#faq">FAQ</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 style="margin-bottom: 20px;">Контакты</h4>
                     <ul class="footer-links">
-                        <li>Telegram: @benify</li>
-                        <li>Email: hello@benify.pro</li>
+                        <li>Telegram: </li>
+                        <li>Email:</li>
                     </ul>
                 </div>
             </div>
             <div style="text-align: center; margin-top: 60px; color: #4A5568;">
-                © 2026 Benify. Все права защищены.
+                © 2026 LoyaltyPrime. Все права защищены.
             </div>
         </div>
     </footer>
